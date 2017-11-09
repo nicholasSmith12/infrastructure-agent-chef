@@ -58,15 +58,17 @@ default['newrelic_infra']['host_integrations']['config'] = {}
 # New Relic Infrastructure on-host custom integration configuration
 default['newrelic_infra']['custom_integrations'] = {}
 
-# apt repository configuration for Debian based hosts
-# See https://docs.chef.io/resource_apt_repository.html for more information
-default['newrelic_infra']['apt'].tap do |conf|
-  conf['uri'] = 'https://download.newrelic.com/infrastructure_agent/linux/apt'
-  conf['key'] = 'https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg'
-  conf['distribution'] = node['lsb']['codename']
-  conf['components'] = %w(main)
-  conf['arch'] = 'amd64'
-  conf['action'] = %i(add)
+if node['platform_family'] == 'debian'
+  # apt repository configuration for Debian based hosts
+  # See https://docs.chef.io/resource_apt_repository.html for more information
+  default['newrelic_infra']['apt'].tap do |conf|
+    conf['uri'] = 'https://download.newrelic.com/infrastructure_agent/linux/apt'
+    conf['key'] = 'https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg'
+    conf['distribution'] = node['lsb']['codename']
+    conf['components'] = %w(main)
+    conf['arch'] = 'amd64'
+    conf['action'] = %i(add)
+  end
 end
 
 # YUM repository configuration for RHEL based hosts
